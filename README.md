@@ -18,5 +18,5 @@ The binary will be produced in the `bin` directory. Enjoy playing with your ball
 
 # Todo
 
-[ ] Effecient overlap detection
-[ ] Effecient vector operations
+- [ ] Effecient overlap detection
+- [ ] Effecient vector operations
