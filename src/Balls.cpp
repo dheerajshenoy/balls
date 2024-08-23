@@ -96,12 +96,8 @@ void Balls::startSimulation() noexcept
         {
             boundaryCollision(ball1);
             for(Circle& ball2: m_balls)
-            {
-                if (ball1 != ball2)
-                {
+                if (ball1 != ball2 && ball1.overlaps(ball2))
                     checkBallCollision(ball1, ball2);
-                }
-            }
             drawCircle(ball1);
         }
 
@@ -136,7 +132,6 @@ Balls::boundaryCollision(Circle& ball) noexcept
 {
     auto p = ball.position();
     auto r = ball.radius();
-
     auto v = ball.velocity();
 
     if (p.x() + r >= m_window__width || p.x() - r <= 0)
@@ -144,21 +139,17 @@ Balls::boundaryCollision(Circle& ball) noexcept
 
     if (p.y() + r >= m_window__height || p.y() - r <= 0)
         ball.setVelocity(Vec2<double>(v.x(), v.y() * -1));
-
 }
 
 void
 Balls::checkBallCollision(Circle& ball1, Circle& ball2) noexcept
 {
-    if (!ball1.overlaps(ball2))
-        return;
     auto m1 = ball1.mass(), m2 = ball2.mass();
     auto x1 = ball1.position(), x2 = ball2.position();
-
-    auto M = m1 + m2;
-    auto k1 = (m1 - m2)/M;
     auto v1 = ball1.velocity();
     auto v2 = ball2.velocity();
+    auto M = m1 + m2;
+    auto k1 = (m1 - m2)/M;
     auto v3 = v1 - v2;
     auto x3 = x1 - x2;
 
