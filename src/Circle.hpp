@@ -1,60 +1,42 @@
 #pragma once
 
 #include "Vec2.hpp"
-#include <cstdint>
-#include <tuple>
 #include "Utils.hpp"
+#include <cstdint>
 
-class Circle {
+class Circle
+{
 
 public:
-    Circle(const uint32_t id, const Vec2<double>& position,
-           const Vec2<double>& velocity,
-           const double& mass,
-           const double& radius,
-           const std::tuple<int, int, int>&
-           color = std::tuple<int, int, int>(255, 255, 255));
+    Circle(const Vec2<double>& position,
+           double radius,
+           void* userData = nullptr) noexcept
+        : m_position(position), m_userData(userData) 
+    {}
 
-    inline uint32_t id() const noexcept
-    { return m_id; }
+    inline void setPosition(Vec2<double>& position) noexcept
+    { m_position = position; }
 
-    inline Vec2<double> position() const noexcept
-    { return m_pos; }
+    static double distanceSqr(Vec2<double>& v1, Vec2<double>& v2) noexcept
+    {
+        auto x1= v1.x(), x2 = v2.x(), y1 = v1.y(), y2 = v2.y();
+        return (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1);
+    }
 
-    inline Vec2<double> velocity() const noexcept
-    { return m_vel; }
-
-    inline double mass() const noexcept
-    { return m_mass; }
+    inline bool overlaps(Circle& other) noexcept
+    {
+        auto R = this->m_radius + other.m_radius;
+        return (distanceSqr(this->m_position, other.m_position) <= R * R);
+    }
 
     inline double radius() const noexcept
     { return m_radius; }
 
-    inline std::tuple<int, int, int> color() const noexcept
-    { return m_color; }
-
-    inline void setMass(const double& mass) noexcept
-    { m_mass = mass; }
-
-    inline void setVelocity(const Vec2<double>& velocity) noexcept
-    { m_vel = velocity; }
-
-    inline void setPosition(Vec2<double>& position) noexcept
-    { m_pos = position; }
-
-    inline void setColor(const std::tuple<int, int, int>& color) noexcept
-    { m_color = color; }
-
-    inline const bool operator!=(const Circle& other) const noexcept
-    {
-        return this->m_id != other.m_id;
-    }
-
-    bool overlaps(const Circle& other) const noexcept;
+    inline Vec2<double> position() const noexcept
+    { return m_position; }
 
 private:
-    uint32_t m_id;
-    Vec2<double> m_pos, m_vel;
-    double m_radius, m_mass;
-    std::tuple<int, int, int> m_color;
+    double m_radius;
+    Vec2<double> m_position;
+    void* m_userData;
 };
